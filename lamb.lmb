@@ -1,0 +1,122 @@
+# A new language, Lamb, just for fun(and homework certainly). #
+# Filename extension will be xxx.lmb #
+
+
+# This is the entrance of the program. #
+function main {
+	# This is a comment. #
+	# "This is not a string." #
+	# For convenience, escape character is not allowed yet. #
+	str = " # This is a string. # "
+
+	# This is a weak typing language, and declarations are not needed. #
+	str = -1;
+	# All vars are in global scope and can be accessed anywhere. #
+	# No duplication of name is allowed. #
+
+	print.params = ["Hello World."]
+	call print; # Hello World. #
+
+	vars["print"]["params"] = [1];
+	call print; # 1 #
+
+	vars.print.params = ["Testify"]
+	call print;
+
+	i = 1;
+	j = 2;
+	print.params = [i + j];
+	call print; # 3 #
+
+	# if-then-else #
+	if i + 1 > i then {
+		print.params = [0];
+	} else {
+		print.params = [-1];
+	}
+	call print; # 0 #
+
+	# while-do #
+	k = 10;
+	while k <= 100 do {
+		print.params = [k];
+		call print; # 10 20 30 ... 100 #
+		k = k + 10;
+	}
+
+	# Functions #
+	print.params = [foo];
+	call print; # function foo #
+
+	call foo;
+
+	call modify;
+	print.params = i;
+	call print; # 4 #
+
+	depth = 10;
+	call recursive;
+
+	# Hash tables #
+	hash = -1;
+
+	print.params = hash;
+	call print; # -1 #
+
+	hash[123] = 456;
+	hash[111] = 222;
+
+	print.params = hash;
+	call print; # hashtable {123: 456, 111: 222} #
+
+	print.params = hash[123];
+	call print; # 456 #
+	print.params = hash[111];
+	call print; # 222 #
+
+	hash[123][333] = 444;
+
+	print.params = hash[123][333];
+	call print; # 444 #
+
+	print.params = hash[123];
+	call print; # hashtable {333: 444} #
+
+	print.params = hash;
+	call print; # hashtable {123: 456, 111: 222, 333: hashtable {333: 444}} #
+}
+
+# Parameters passing is not allowed. #
+function foo {
+	print.params = i;
+	call print; # 1 #
+
+	# Another function call that goes deeper. #
+	call bar;
+}
+
+function bar {
+	print.params = j;
+	call print; # 2 #
+}
+
+function recursive {
+	if depth > 0 then {
+		print.params = "recursive";
+		call print;
+
+		depth = depth - 1;
+		call recursive;
+	}
+}
+
+function modify {
+	i = 4;
+}
+
+# Embedded python code to print. #
+function print {
+	embed "print(vm.vars['print']['params'])";
+}
+
+# qwq #
